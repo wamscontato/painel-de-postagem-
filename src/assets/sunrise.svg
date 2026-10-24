@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d9e2f3"/><stop offset=".45" stop-color="#171f8a"/><stop offset="1" stop-color="#171f8a"/></linearGradient><radialGradient id="r"><stop stop-color="#d9e2f3"/><stop offset="1" stop-color="#11cfe0" stop-opacity="0"/></radialGradient></defs>
+  <rect width="900" height="1125" fill="url(#g)"/><circle cx="710" cy="270" r="310" fill="url(#r)"/>
+  <path d="M0 760c180-150 330-50 470 55 170 128 268 90 430-40v350H0Z" fill="#171f8a" opacity=".86"/>
+  <path d="M0 905c190-110 370 10 520 74 150 65 260 42 380-50v196H0Z" fill="#171f8a" opacity=".7"/>
+  <text x="70" y="150" fill="#fff" font-family="Arial" font-size="22" letter-spacing="5">NOTAS DE FIM DE SEMANA</text><text x="65" y="1020" fill="#fff" font-family="Arial" font-size="58" font-weight="700">slow mornings</text>
+</svg>
