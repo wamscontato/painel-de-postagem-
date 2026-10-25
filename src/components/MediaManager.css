@@ -1,0 +1,52 @@
+.media-remove-action,
+.media-edit-action,
+.media-zoom-action {
+  position: absolute;
+  z-index: 5;
+  display: inline-flex;
+  min-width: 36px;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid rgb(255 255 255 / 82%);
+  border-radius: 11px;
+  color: #17224a;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 3px 12px rgb(8 19 55 / 24%);
+  transition: transform 150ms ease, background 150ms ease, box-shadow 150ms ease;
+  touch-action: manipulation;
+}
+.media-remove-action:hover,
+.media-edit-action:hover,
+.media-zoom-action:hover {
+  transform: translateY(-1px);
+  background: #fff;
+  box-shadow: 0 5px 16px rgb(8 19 55 / 32%);
+}
+.media-remove-action:focus-visible,
+.media-edit-action:focus-visible,
+.media-zoom-action:focus-visible {
+  outline: 3px solid #11cfe0;
+  outline-offset: 2px;
+}
+.media-remove-action { top: 7px; right: 7px; border-radius: 50%; color: #9c2940; }
+.media-zoom-action { top: 7px; left: 50%; transform: translateX(-50%); }
+.media-zoom-action:hover { transform: translateX(-50%) translateY(-1px); }
+.media-edit-action--color { bottom: 33px; left: 7px; padding: 0 9px; color: #123d55; }
+.media-edit-action--color span { font-size: 9px; font-weight: 700; }
+.media-edit-action--crop { right: 7px; bottom: 33px; color: #123d55; }
+.media-item-footer { position: absolute; z-index: 3; right: 0; bottom: 0; left: 0; display: flex; height: 27px; align-items: center; justify-content: space-between; gap: 3px; padding: 0 4px 0 7px; color: #fff; background: linear-gradient(0deg, rgb(12 21 49 / 90%), rgb(12 21 49 / 72%)); }
+.media-item-footer > span { overflow: hidden; flex: 1; text-overflow: ellipsis; white-space: nowrap; font-size: 8px; line-height: 1.15; }
+.media-order-actions { display: flex; flex: none; align-items: center; gap: 1px; }
+.media-item-footer .tiny-icon { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 6px; color: #fff; background: rgb(255 255 255 / 15%); }
+.media-item-footer .tiny-icon:disabled { cursor: default; opacity: .45; }
+.media-item-footer .tiny-icon:not(:disabled):hover { background: rgb(255 255 255 / 30%); }
+@media (max-width: 620px) {
+  .media-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .media-edit-action--color span { display: none; }
+  .media-edit-action--color, .media-edit-action--crop { width: 38px; min-width: 38px; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .media-remove-action, .media-edit-action, .media-zoom-action { transition: none; }
+}
