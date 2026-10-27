@@ -1,21 +1,29 @@
-# Estúdio Social — plano de implementação
+# Planejador de conteúdo — plano de implementação
 
 ## Direção visual
 
-A interface usa as cores da imagem enviada, omitindo o tom lilás: ciano `#11CFE0`, azul-marinho `#171F8A`, azul-claro `#D9E2F3`, papel frio `#F2F5FB` e branco `#FFFFFF`. O ciano destaca ações e estados; o marinho organiza navegação e áreas de foco; os azuis muito claros preservam a leitura.
+A interface conserva as cores da imagem enviada, omitindo o tom lilás: ciano `#11CFE0`, azul-marinho `#171F8A`, azul-claro `#D9E2F3`, papel frio `#F2F5FB` e branco `#FFFFFF`. O ciano destaca ações e estados; o marinho organiza navegação e áreas de foco; os azuis claros favorecem leitura. Poppins local, superfícies claras e controles acessíveis mantêm a linguagem já aprovada.
 
-Poppins local define a hierarquia editorial. A navegação fica em marinho; a área de trabalho usa superfícies claras e painéis limpos. O criador mantém configurações à esquerda e prévia à direita, com movimento curto e foco visível. Os espaços de edição fotográfica usam uma mesa escura grafite, conforme o briefing anexado, e realçam controles com ciano da paleta aprovada. Nenhuma tela inclui lilás.
+O workspace compacto elimina nomes redundantes no cabeçalho lateral; a seta de 44 px permanece disponível em telas estreitas e abre uma gaveta com rótulos que se fecha após a navegação. A alternância dia/noite fica como botão-sol/lua no topo do conteúdo. O estado de operação local sai da linha de status e recebe destino próprio no final da navegação.
 
 ## Arquitetura
 
-`src/App.tsx` compõe navegação SPA, dashboard, páginas de trabalho e criador. `src/components/Sidebar.tsx` cuida da navegação e do tema; `MediaManager.tsx` trata upload, ordenação acessível e ações nas fotos; `PreviewCard.tsx` representa formatos de conteúdo; `src/lib/storage.ts` armazena rascunhos em IndexedDB com fallback localStorage; `src/styles.css` define tokens, responsividade e estados de acessibilidade.
+`src/App.tsx` continua compondo navegação SPA, estado do criador e páginas. `Sidebar.tsx` define o rótulo final do modo local e o novo atalho de conexões; o tema é alternado no cabeçalho. `InsightsPage.tsx` aplica o mesmo período e a mesma plataforma a indicadores, tendência, resumo por plataforma, conteúdos e PDF; o relatório multipágina conserva as definições dos dados demonstrativos.
 
-`PhotoStudio.tsx` é um editor modal invocado pelas ações em cada foto do carrossel. Processa pixels na tela Canvas sem alterar o original, oferece ajustes e recorte ao vivo, e só substitui a imagem da publicação depois de confirmar. Salva os parâmetros de edição e recorte junto à cópia exportada no estado local da publicação para reabertura do ajuste. O Canvas calcula a área completa para ângulos arbitrários; movimentar o recorte entra no histórico de desfazer/refazer.
+`CalendarPage.tsx` separa o calendário da página principal. Guarda tarefas/notas locais em IndexedDB com fallback em `localStorage`, escolhendo a cópia mais recente; após erro ao persistir, conserva editor e dados e apresenta o erro dentro do diálogo. Permite criar, editar e excluir itens com título, data, hora, cor e anotação, usa entrada de hora nativa e oferece visões dia, semana, mês e ano. Google Agenda mostra configuração pendente até existir OAuth aprovado.
 
-`CoverComposer.tsx` será um editor de composição em camadas, com área vetorial redimensionável, propriedades, timeline e exportação PNG. As estruturas de camadas e seus dados serão persistidos localmente em IndexedDB para uso em Modelos e em Criar publicação. `NewsPage.tsx` mostrará links ao canal/playlist verificados e ao Google Trends oficial do Brasil; não fará raspagem nem afirmará ter acesso a uma API de tendências.
+`IntegrationsPage.tsx` centraliza a preparação de contas sociais, Google Agenda e assistentes. Credenciais não ficam no navegador. A página final informa como o workspace opera localmente e que nenhum dado é transmitido.
 
-## Escopo
+## Escopo e limites
 
-A aplicação é um front-end hospedável, sem API, backend ou integração automática com redes sociais. Agendamento, autenticação, publicação, métricas demonstrativas, trending e armazenamento remoto não devem ser representados como integrações reais. Os dados criados em rascunhos, edições e modelos permanecem locais no dispositivo.
+Conservar a ferramenta genérica, responsiva e em português brasileiro. Identidade genérica, sem marca preexistente nem tom lilás. Relatórios imprimem todos os indicadores e tabelas que a interface oferece, mas continuam rotulados demonstrativos: não representam acesso aos insights reais das redes.
 
-O editor fotográfico suporta ajustes de imagem com prévia, proporções sociais, histórico e exportação sem sobrescrever o original. Ferramentas que exijam IA ou processamento não implementado serão identificadas como indisponíveis. O editor de capa suporta imagem, texto, formas, guias e camadas; visualização e exportação devem distinguir capa estática de animação/transições de timeline quando não houver exportação de vídeo.
+Por escolha explícita do usuário nesta rodada, manter a aplicação local no navegador e não habilitar servidor/banco. Calendário, tarefas e anotações ficam no dispositivo. Google Agenda, Claude e API própria/terminal permanecem claramente pendentes; não abrir fluxos de credenciais, simular OAuth, alegar conexão ou transferir dados do dashboard a terceiros. Integrações reais poderão ser reavaliadas apenas após nova autorização, credenciais/escopos e configuração segura.
+
+## Organização dos componentes
+
+- `src/components/CalendarPage.tsx` e `CalendarPage.css`: calendário local CRUD com controles de navegação e quatro escalas de tempo.
+- `src/components/InsightsPage.tsx` e `src/lib/fullInsightsReport.ts`: filtros e relatório PDF multipágina derivado de todas as seções visíveis.
+- `src/components/Sidebar.tsx` e `src/App.tsx`: navegação, tema no cabeçalho e separação da aba final de modo local.
+- `src/components/IntegrationsPage.tsx`: cartões de conectar/preparar contas com estado pendente, sem campos para segredos.
+- `src/lib/storage.ts`: reusa IndexedDB existente; não cria storage remoto.

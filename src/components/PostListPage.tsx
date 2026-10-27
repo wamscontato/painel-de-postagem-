@@ -101,7 +101,7 @@ export function PostListPage({ page, onCreate, onEdit }: Props) {
     <div className="filter-row"><div className="search-field"><span aria-hidden="true">⌕</span><input aria-label="Buscar publicações" placeholder="Buscar por título ou tipo" value={query} onChange={event => setQuery(event.target.value)} /></div><span className="helper-text">{items.length} {isDraft ? 'rascunhos' : 'agendamentos locais'}</span></div>
     <div className="list-surface"><div className="list-header"><span>Publicação</span><span>Formato</span><span>Próximo passo</span><span>Atualizada</span><span aria-label="Ações" /></div>
       {filteredItems.length ? filteredItems.map((item, index) => <div className="list-row post-list-row" data-search={`${item.name} ${item.type}`.toLocaleLowerCase('pt-BR')} key={item.id}>
-        <div className="list-title"><div className={`list-thumb list-thumb--${index % 4}`} /><div><strong>{item.name}</strong><span>Estúdio Social · local</span></div></div>
+        <div className="list-title"><div className={`list-thumb list-thumb--${index % 4}`} /><div><strong>{item.name}</strong><span>Conteúdo demonstrativo local</span></div></div>
         <span className="list-type">{item.type}</span>
         <span className="list-next"><i className={isDraft ? 'status-dot status-dot--yellow' : 'status-dot'} />{item.next}</span>
         <span className="list-updated">{item.updated}</span>
