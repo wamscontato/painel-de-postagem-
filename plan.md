@@ -1,29 +1,39 @@
-# Planejador de conteúdo — plano de implementação
+# Planejador de conteúdo — plano de integrações autorizadas
 
-## Direção visual
+## Direção do produto e visual
 
-A interface conserva as cores da imagem enviada, omitindo o tom lilás: ciano `#11CFE0`, azul-marinho `#171F8A`, azul-claro `#D9E2F3`, papel frio `#F2F5FB` e branco `#FFFFFF`. O ciano destaca ações e estados; o marinho organiza navegação e áreas de foco; os azuis claros favorecem leitura. Poppins local, superfícies claras e controles acessíveis mantêm a linguagem já aprovada.
+Ferramenta genérica em português brasileiro, preservando a identidade já aprovada: ciano, azul-marinho, azul-claro e superfícies frias. Navegação, criador, biblioteca, calendário, rascunhos e relatórios continuam responsivos e locais. Evitar mudanças de marca, lilás e decoração sem função. Mensagens de conexão, carregamento, sucesso, erro e ausência de dados devem ser claras, acessíveis e consistentes.
 
-O workspace compacto elimina nomes redundantes no cabeçalho lateral; a seta de 44 px permanece disponível em telas estreitas e abre uma gaveta com rótulos que se fecha após a navegação. A alternância dia/noite fica como botão-sol/lua no topo do conteúdo. O estado de operação local sai da linha de status e recebe destino próprio no final da navegação.
+## Escopo autorizado
 
-## Arquitetura
+A autorização atual habilita servidor, banco, login e leitura de métricas somente para Instagram, TikTok e YouTube. Só mostrar insights de uma conta que a própria pessoa autenticada conectar e autorizar; sem métricas falsas/de demonstração antes disso. Usar login Manus e escopos mínimos de leitura. Não publicar, editar ou enviar conteúdo às redes. O compositor, a mídia, rascunhos e o calendário permanecem locais; Google Agenda, Claude e API própria de chatbot/terminal continuam pendentes.
 
-`src/App.tsx` continua compondo navegação SPA, estado do criador e páginas. `Sidebar.tsx` define o rótulo final do modo local e o novo atalho de conexões; o tema é alternado no cabeçalho. `InsightsPage.tsx` aplica o mesmo período e a mesma plataforma a indicadores, tendência, resumo por plataforma, conteúdos e PDF; o relatório multipágina conserva as definições dos dados demonstrativos.
+Após consentimento OAuth da rede, sincronizar automaticamente. Ao abrir Métricas, atualizar uma conexão com dados desatualizados e disponibilizar atualização manual. Atribuir cada conta e consulta ao `openId` autenticado. Nunca enviar tokens ao navegador ou gravá-los em logs. Desconectar deve revogar a autorização quando a API oferecer endpoint e apagar os tokens e instantâneos daquela conta, sem afetar outras contas.
 
-`CalendarPage.tsx` separa o calendário da página principal. Guarda tarefas/notas locais em IndexedDB com fallback em `localStorage`, escolhendo a cópia mais recente; após erro ao persistir, conserva editor e dados e apresenta o erro dentro do diálogo. Permite criar, editar e excluir itens com título, data, hora, cor e anotação, usa entrada de hora nativa e oferece visões dia, semana, mês e ano. Google Agenda mostra configuração pendente até existir OAuth aprovado.
+Manter os filtros de 7 dias, 28 dias, 90 dias, 6 meses, 1 ano e datas manuais. Indicadores, comparativos, tabelas, séries e PDF usam a mesma fonte, plataforma e período selecionados. Não converter campos indisponíveis em zero, estimar valores ou apresentar contagens vitalícias como atividade do período; indicar fonte, horário, cobertura e limitações de cada rede.
 
-`IntegrationsPage.tsx` centraliza a preparação de contas sociais, Google Agenda e assistentes. Credenciais não ficam no navegador. A página final informa como o workspace opera localmente e que nenhum dado é transmitido.
+## Contratos e limites verificados nas fontes oficiais
 
-## Escopo e limites
+- **Instagram:** Instagram Login para contas profissionais Business/Creator, sem exigir Página do Facebook. Usar `instagram_business_basic` e `instagram_business_manage_insights`. Endpoint de insights de conta em `graph.instagram.com/v26.0/{id}/insights`; v26.0 é a versão mais recente consultada. Contas pessoais não são elegíveis. Acesso a contas externas pode exigir Advanced Access, análise do app e verificação empresarial. `follower_count` não está disponível abaixo de 100 seguidores; dados podem atrasar até 48 horas e respostas vazias não significam zero.
+- **TikTok:** Login Kit + Display API com `user.info.basic`, `user.info.stats` e `video.list`. Mostrar contagens atuais de perfil e vídeos públicos; contagens por vídeo são valores atuais/lifetime, não uma série histórica diária. Tokens de acesso expiram em 24 horas, refresh costuma durar 365 dias e pode ser rotacionado. O produto, app e escopos precisam ser aprovados pelo TikTok.
+- **YouTube:** YouTube Analytics `reports.query`, `ids=channel==MINE`, somente canal controlado pela pessoa autenticada e escopo atualmente indicado no topo da referência como `youtube.readonly`; sem escopos de publicação, gestão ou monetização. Consultas exigem datas e métricas válidas. O processamento pode atrasar 48–72 horas e o fim retornado pode ser anterior ao solicitado.
+- Os apps OAuth, credenciais e aprovações de cada fornecedor ainda precisam ser configurados; a implementação não concede aprovação. Antes de liberar OAuth, fornecer uma identificação do controlador e um contato público em `PUBLIC_DATA_CONTROLLER_CONTACT`; o valor aparece na página de privacidade e funciona como bloqueio de segurança se estiver ausente. Redirect URIs permanentes: `https://studio-9vopelhq.manus.space/api/oauth/instagram/callback`, `https://studio-9vopelhq.manus.space/api/oauth/tiktok/callback` e `https://studio-9vopelhq.manus.space/api/oauth/youtube/callback`.
 
-Conservar a ferramenta genérica, responsiva e em português brasileiro. Identidade genérica, sem marca preexistente nem tom lilás. Relatórios imprimem todos os indicadores e tabelas que a interface oferece, mas continuam rotulados demonstrativos: não representam acesso aos insights reais das redes.
+## Arquitetura, segurança e projeto
 
-Por escolha explícita do usuário nesta rodada, manter a aplicação local no navegador e não habilitar servidor/banco. Calendário, tarefas e anotações ficam no dispositivo. Google Agenda, Claude e API própria/terminal permanecem claramente pendentes; não abrir fluxos de credenciais, simular OAuth, alegar conexão ou transferir dados do dashboard a terceiros. Integrações reais poderão ser reavaliadas apenas após nova autorização, credenciais/escopos e configuração segura.
+Preservar React, TypeScript e Vite. `src/App.tsx` carrega autenticação sem bloquear funções locais. `IntegrationsPage.tsx` apresenta login, elegibilidade, estado da configuração, contas ativas, permissões, sincronização e desconexão. `InsightsPage.tsx` troca fixtures por estados autenticados vazio/carregando/parcial/erro e por métricas recebidas da API. `src/lib/api.ts` concentra chamadas tipadas; `src/lib/fullInsightsReport.ts` conserva o PDF multipágina com proveniência, cobertura e limitações reais.
+
+Adicionar `server/` em Node/Express com autenticação Manus, callbacks sociais com state de uso único, adaptadores separados, refresh/expiração, autorização por usuário e endpoints de login, conexões, métricas, sincronização e health. O login normal usa o cookie `webdev_app_session` com token opaco aleatório de alta entropia; persistir somente o hash da sessão no MySQL. No Preview, aceitar a sessão injetada pela plataforma apenas após verificar seu JWT HS256 com `MANUS_JWT_SECRET`, validar `appId` e obter `openId`; ambos os caminhos usam as mesmas regras de propriedade dos dados. Cookies da sessão: `HttpOnly; Secure; SameSite=None` para o Preview HTTPS incorporado. Nome, e-mail e tokens Manus não precisam ser persistidos.
+
+Usar MySQL gerenciado (`DATABASE_URL`) para sessões, conexões sociais e instantâneos de métricas por dono/conta/período; toda leitura, atualização e remoção aplica `openId`. Criar migração aditiva versionada e não semear métricas artificiais. Cifrar tokens sociais com AES-256-GCM e segredo separado `SOCIAL_TOKEN_ENCRYPTION_KEY` obtido pelo formulário seguro; usar também o formulário protegido para `PUBLIC_DATA_CONTROLLER_CONTACT`, exibido como texto na política pública. Nunca usar o filesystem efêmero para dados duráveis.
+
+Manter Vite no Preview pela porta 3000 e encaminhar `/api/*` ao Express. Para produção, usar compilação estática `npm ci && npm run build` em `dist` e um Dockerfile Node que atende as rotas API na porta `PORT` (padrão 3000). Configurar `/api/*` como `server` e `/*` como `static` com fallback SPA; o health `/api/health` é público, barato e sem autenticação. `public/manus-routes.json` lista páginas da interface (incluindo `/privacidade` e `/termos`), nunca endpoints API.
 
 ## Organização dos componentes
 
-- `src/components/CalendarPage.tsx` e `CalendarPage.css`: calendário local CRUD com controles de navegação e quatro escalas de tempo.
-- `src/components/InsightsPage.tsx` e `src/lib/fullInsightsReport.ts`: filtros e relatório PDF multipágina derivado de todas as seções visíveis.
-- `src/components/Sidebar.tsx` e `src/App.tsx`: navegação, tema no cabeçalho e separação da aba final de modo local.
-- `src/components/IntegrationsPage.tsx`: cartões de conectar/preparar contas com estado pendente, sem campos para segredos.
-- `src/lib/storage.ts`: reusa IndexedDB existente; não cria storage remoto.
+- `src/components/IntegrationsPage.tsx`: sessão Manus, conexões sociais reais, permissões e estados de configuração.
+- `src/components/InsightsPage.tsx` + `src/lib/fullInsightsReport.ts`: filtros de datas/plataformas, resultados reais, limitações e PDF coerente.
+- `src/lib/api.ts` e `src/App.tsx`: transporte autenticado, estado de sessão e navegação.
+- `server/index.js`, `server/auth.js`, `server/db.js`, `server/providers/`, `server/migrations/`: servidor, sessões/identidade, persistência/migrações e adaptadores por fornecedor.
+- `/privacidade` e `/termos`: páginas públicas com finalidade, dados usados, retenção, segurança, terceiros, desconexão e exclusão, com links visíveis no fluxo de integração.
+- `vite.config.ts`, `Dockerfile`, `package.json`/lockfile, `app.config.ts` e config Webdev: desenvolvimento, compilação, metadados genéricos e deploy híbrido.

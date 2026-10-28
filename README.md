@@ -1,33 +1,52 @@
 # Planejador de conteúdo
 
-Ferramenta genérica e responsiva para planejar conteúdo, organizar mídia, criar capas e revisar relatórios demonstrativos. A hospedagem é estática: rascunhos, preferências, fotos, modelos e tarefas de calendário permanecem neste navegador.
+Ferramenta genérica em português brasileiro para planejar conteúdo, organizar mídia, criar capas e consultar métricas somente leitura das contas sociais que a própria pessoa conectou. A interface preserva a identidade já aprovada em ciano, azul-marinho e azuis claros.
 
-Implementado em React, TypeScript e Vite. Usa Poppins local, Lucide React, Framer Motion, dnd-kit, jsPDF e IndexedDB.
+## Fronteira de dados
+
+Rascunhos, arquivos de mídia, modelos e tarefas do calendário continuam guardados neste navegador. O sistema não publica, agenda, edita nem exclui conteúdo nas redes, não lê mensagens ou legendas e não transfere esses dados locais.
+
+A aba **Métricas** não mostra números de exemplo. Depois de entrar com uma sessão Manus e autorizar uma rede, o servidor sincroniza os dados disponíveis automaticamente. Cada chamada e consulta é vinculada à conta Manus autenticada. Tokens sociais ficam cifrados no banco gerenciado e nunca são retornados ao navegador. Instagram Login atende apenas contas profissionais elegíveis; TikTok mostra contagens acumuladas atuais, não desempenho diário; YouTube pode retornar dados atrasados ou cobertura incompleta. Campos ausentes aparecem como indisponíveis.
+
+Google Agenda, Claude e API própria de chatbot/terminal continuam identificados como opções pendentes. O estado de integrações externas não altera as funções locais do criador.
 
 ## Desenvolvimento
+
+O projeto usa React, TypeScript e Vite na porta 3000, com API Express local encaminhada pelo Vite para a porta 3001. No ambiente Webdev, as variáveis protegidas e o banco são fornecidos pela plataforma.
 
 ```bash
 npm ci
 npm run dev
-```
-
-A aplicação é servida na porta 3000. Para validar a saída estática:
-
-```bash
+npm run check:server
+npm test
 npm run build
 ```
 
+O container de produção e o processo de desenvolvimento usam Node.js 22.13.0 e npm 10.9.2. A API publica o endpoint de saúde não autenticado em `/api/health`.
+
+## OAuth de produção
+
+Cada fornecedor exige cadastro e, conforme o caso, revisão/aprovação do aplicativo. Cadastre exatamente estes endereços HTTPS como callbacks antes de preencher as credenciais no formulário seguro de segredos do Webdev:
+
+- Instagram: `https://studio-9vopelhq.manus.space/api/oauth/instagram/callback`
+- TikTok: `https://studio-9vopelhq.manus.space/api/oauth/tiktok/callback`
+- YouTube: `https://studio-9vopelhq.manus.space/api/oauth/youtube/callback`
+
+São solicitados apenas escopos de leitura. Não informe senhas sociais, códigos de acesso ou segredos em arquivos do projeto nem em conversas.
+
+O formulário protegido do Webdev recebe `INSTAGRAM_CLIENT_ID`, `INSTAGRAM_CLIENT_SECRET`, `TIKTOK_CLIENT_KEY`, `TIKTOK_CLIENT_SECRET`, `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET`, além de `SOCIAL_TOKEN_ENCRYPTION_KEY` (Base64 canônico que decodifica para 32 bytes aleatórios) e `PUBLIC_DATA_CONTROLLER_CONTACT` (identificação do controlador e contato público, exibidos na política de privacidade). O OAuth social permanece bloqueado sem o contato público, as credenciais do app e a chave de cifragem. Para o domínio permanente, configure os valores no ambiente de produção; a aprovação do aplicativo ainda depende de cada fornecedor.
+
 ## Áreas
 
-- **Dashboard, calendário, agendadas e rascunhos:** agenda local editável por dia, semana, mês e ano, com título, data, horário, anotação e cor da tarefa. Ações em rascunhos e agendamentos abrem menus flutuantes com editar, duplicar, agendar/reagendar, mover de estado e excluir.
-- **Criar publicação:** imagem única, carrossel, Story e Reel; escolha de Instagram, TikTok e YouTube; proporções e dimensões padrão, legenda, hashtags, localização e prévia. Uma capa salva pode ser aplicada à primeira imagem.
-- **Conteúdo visual e laboratório de fotografia:** ações para remover, editar e reenquadrar cada foto do carrossel; edição não destrutiva com comparar, desfazer/refazer, presets, controles de luz e cor, recorte livre ou 1:1/4:5/16:9/9:16, reposicionamento, zoom, rotação, endireitamento e exportação PNG/JPEG/WebP. A foto original e seus parâmetros de edição ficam associados à cópia local do rascunho.
-- **Modelos de publicações e editor de capas:** formatos sociais predefinidos ou tamanho personalizado; upload de imagem/PNG e marca-d'água; texto, fontes, formas, opacidade, preenchimento, contorno, sombra, brilho e duotone; réguas, guias, camadas reordenáveis e timeline com prévia de transições. Exporta PNG estático.
-- **Métricas e relatórios:** filtros de 7/28/90 dias, seis meses, um ano e intervalo manual de data inicial/final; indicadores, resumo por canal, conteúdos de exemplo e PDF completo de várias páginas com metodologia e aviso de dados demonstrativos. Não há seção para personalizar o relatório.
-- **Conectar contas:** Instagram/Meta, TikTok, YouTube, Google Agenda, Claude e endpoint/API própria são opções pendentes. Nenhum OAuth, formulário de credenciais, envio de dados ou conexão é ativado nesta versão local.
-- **Modo local:** informa onde os dados ficam e apresenta o estado das conexões; a guia é o último item do menu lateral.
-- **Notícias Entreverso TV:** portal, canal oficial e playlists do YouTube; atalhos para Google Trends Brasil e modelos editoriais utilizáveis no criador.
+- **Dashboard, calendário, agendadas e rascunhos:** planejamento local editável por dia, semana, mês e ano. Os menus de contexto são flutuantes e oferecem as ações disponíveis em cada estado.
+- **Criar publicação:** imagem única, carrossel, Story e Reel; seleção de Instagram, TikTok e YouTube; proporções e dimensões padrão, legenda, hashtags e prévia. O envio às redes não faz parte do produto.
+- **Conteúdo visual e laboratório de fotografia:** edição não destrutiva, reenquadramento social, controles de luz/cor, reposicionamento, zoom, rotação e exportação local.
+- **Modelos de publicações e editor de capas:** tamanhos predefinidos ou personalizados, imagem/PNG, marca-d'água, texto, formas, fontes, camadas, réguas, guias e timeline de transições; exporta PNG.
+- **Métricas e relatórios:** filtros de 7/28/90 dias, 6 meses, 1 ano e intervalo manual; indicadores, comparações, cobertura de cada API, publicações disponíveis e PDF multipágina derivado somente dos dados sincronizados.
+- **Conectar contas:** login Manus, estado/configuração do OAuth, escopos, contas conectadas, sincronização e desconexão de Instagram, TikTok e YouTube.
+- **Modo local:** informa onde ficam os rascunhos, a mídia e as tarefas; permanece como o último item da navegação.
+- **Notícias Entreverso TV:** portal, canais e playlists do YouTube, Google Trends Brasil e modelos editoriais.
 
-## Limites desta versão
+## Transparência e requisitos de ativação
 
-Os indicadores e conteúdos de rede são exemplos visuais, não insights reais. Google Trends abre a página oficial; a aplicação não simula uma API. Não há backend, banco remoto, OAuth, armazenamento de credenciais, publicação direta, integração Google Agenda, conexão com Claude/chatbot ou consulta de dados de contas. Não informe senhas, tokens, chaves ou endereços de API nesta demonstração. Máscaras e retoque automático por IA não são apresentados como funções implementadas; a timeline anima uma prévia e a exportação do compositor é uma imagem PNG estática.
+As páginas `/privacidade` e `/termos` descrevem a finalidade de leitura, a retenção de até 400 dias dos instantâneos, a desconexão e as limitações dos fornecedores. Antes de abrir conexões sociais a usuários, o operador precisa completar a identificação do controlador e um contato válido nas informações de privacidade, revisar a política e obter as credenciais/aprovações oficiais dos três fornecedores.

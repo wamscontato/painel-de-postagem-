@@ -20,6 +20,7 @@ import type { CoverTemplate } from './components/CoverComposer'
 import { TemplateStudio } from './components/TemplateStudio'
 import CalendarPage from './components/CalendarPage'
 import { LocalModePage } from './components/LocalModePage'
+import { PublicPageRouter } from './components/PublicPages'
 import './navigation-updates.css'
 
 const urlSchema = z.string().url()
@@ -41,6 +42,12 @@ type ToastState = { message: string; kind?: 'success' | 'info' } | null
 type DraftState = { platforms?: string[]; aspectRatio?: string; format: string; media: MediaItem[]; caption: string; hashtags: string[]; location: string; title: string; scheduleDate: string; scheduleTime: string; ctaUrl: string }
 
 export default function App() {
+  const path = typeof window === 'undefined' ? '/' : window.location.pathname
+  if (path === '/privacidade' || path === '/termos') return <PublicPageRouter />
+  return <WorkspaceApp />
+}
+
+function WorkspaceApp() {
   const [activePage, setActivePage] = useState<PageId>('dashboard')
   const [collapsed, setCollapsed] = useState(() => typeof window !== 'undefined' && window.matchMedia('(max-width: 860px)').matches)
   const [darkMode, setDarkMode] = useState(false)
@@ -144,10 +151,10 @@ function CreatePage(props: { selectedPlatforms: string[]; setSelectedPlatforms: 
 function WorkspacePage({ page, onNavigate, onCreate, onUseMedia, onEditPost, coverTemplates, onSaveCoverTemplate, onDeleteCoverTemplate, onUseCoverTemplate, onUseProgramModel }: { page: PageId; onNavigate: (page: PageId) => void; onCreate: () => void; onUseMedia: (item: { id: string; name: string; alt: string; src: string; fileName: string }) => void; onEditPost: (item: PostListItem) => void; coverTemplates: CoverTemplate[]; onSaveCoverTemplate: (template: CoverTemplate) => void; onDeleteCoverTemplate: (id: string) => void; onUseCoverTemplate: (template: CoverTemplate) => void; onUseProgramModel: (idea: ProgramIdea) => void }) {
   if (page === 'dashboard') return <DashboardPage onNavigate={onNavigate} onCreate={onCreate} />
   if (page === 'calendar') return <CalendarPage onCreate={onCreate} onConnectAccounts={() => onNavigate('settings')} />
-  if (page === 'settings') return <IntegrationsPage />
+  if (page === 'settings') return <IntegrationsPage onNavigate={onNavigate} />
   if (page === 'local') return <LocalModePage onConnectAccounts={() => onNavigate('settings')} />
   if (page === 'media') return <MediaLibrary onCreate={(item) => { if (item) onUseMedia(item); onCreate() }} />
-  if (page === 'insights') return <InsightsPage />
+  if (page === 'insights') return <InsightsPage onNavigate={onNavigate} />
   if (page === 'news') return <NewsPage onUseModel={onUseProgramModel} />
   if (page === 'templates') return <TemplateStudio templates={coverTemplates} onSave={onSaveCoverTemplate} onDelete={onDeleteCoverTemplate} onUse={onUseCoverTemplate} />
   return <PostListPage page={page === 'drafts' ? 'drafts' : 'scheduled'} onCreate={onCreate} onEdit={onEditPost} />
