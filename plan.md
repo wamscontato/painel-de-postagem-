@@ -4,6 +4,10 @@
 
 Ferramenta genérica em português brasileiro, preservando a identidade já aprovada: ciano, azul-marinho, azul-claro e superfícies frias. Navegação, criador, biblioteca, calendário, rascunhos e relatórios continuam responsivos e locais. Evitar mudanças de marca, lilás e decoração sem função. Mensagens de conexão, carregamento, sucesso, erro e ausência de dados devem ser claras, acessíveis e consistentes.
 
+## Laboratório de fotografia — área de trabalho
+
+No `PhotoStudio`, manter o quadriculado como área de transparência ao redor de uma folha visível, proporcional à seleção Original/1:1/4:5/16:9/9:16. Encaixar a folha dentro do painel e restringir o pan ao excedente real da foto para que o conteúdo não saia da página nem desapareça. As camadas distinguem fotografia e folha fixa; ao selecionar a folha, os controles que alteram a foto (ajustes, predefinições, pan, rotação, endireitamento, espelhamento, zoom, histórico e restaurar) ficam desativados em ambas as abas, enquanto proporção e exportação permanecem disponíveis. O painel deixa claro que o quadriculado externo é apenas visual e não será exportado. Zoom de recorte com menos/mais, slider e reinício a 100%, sincronizados ao canvas e à exportação. Permitir também pequenos deslocamentos por botões direcionais e teclado, preservando a proporção, rotação, espelhamento, histórico e original.
+
 ## Escopo autorizado
 
 A autorização atual habilita servidor, banco, login e leitura de métricas somente para Instagram, TikTok e YouTube. Só mostrar insights de uma conta que a própria pessoa autenticada conectar e autorizar; sem métricas falsas/de demonstração antes disso. Usar login Manus e escopos mínimos de leitura. Não publicar, editar ou enviar conteúdo às redes. O compositor, a mídia, rascunhos e o calendário permanecem locais; Google Agenda, Claude e API própria de chatbot/terminal continuam pendentes.
